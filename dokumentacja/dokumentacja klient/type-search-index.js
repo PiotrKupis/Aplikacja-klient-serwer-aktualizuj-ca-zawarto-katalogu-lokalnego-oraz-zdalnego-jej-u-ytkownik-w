@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"<Unnamed>","l":"Change"},{"p":"<Unnamed>","l":"ClientApp"},{"p":"<Unnamed>","l":"GetFile"},{"p":"<Unnamed>","l":"SendFile"},{"p":"<Unnamed>","l":"WaitForFilesClient"},{"p":"<Unnamed>","l":"WaitForListOfUsers"},{"p":"<Unnamed>","l":"WatchDirectoryClient"}]
