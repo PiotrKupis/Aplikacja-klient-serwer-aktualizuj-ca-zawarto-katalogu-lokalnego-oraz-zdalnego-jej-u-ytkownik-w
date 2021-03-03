@@ -4,7 +4,7 @@
  * @author Piotr Kupis
  * @version 1.0, 15 czerwiec 2020
  */
-class Change{
+class Change {
     private String kindOfChange;
     private String value;
 
@@ -12,17 +12,17 @@ class Change{
      * Konstruktor tworzący obiekt klasy służącej do przekazywania zmiany do wprowadzenia w interfejsie graficznym.
      *
      * @param kindOfChange rodzaj zmiany do wprowadzenia w interfejsie graficznym
-     * @param value wartość wprowadzonej zmiany
+     * @param value        wartość wprowadzonej zmiany
      */
-    Change(String kindOfChange, String value){
-        this.kindOfChange=kindOfChange;
-        this.value=value;
+    Change(String kindOfChange, String value) {
+        this.kindOfChange = kindOfChange;
+        this.value = value;
     }
 
     /**
      * @return rodzaj zmiany
      */
-    public String getKindOfChange(){
+    public String getKindOfChange() {
         return kindOfChange;
     }
 

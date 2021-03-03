@@ -1,4 +1,6 @@
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.SocketException;
 import java.util.TreeMap;
 
@@ -12,19 +14,19 @@ public class SendFileToUser implements Runnable {
 
     private DataInputStream getInformation;
     private String userName;
-    private TreeMap<Integer,String> listOfUsers;
+    private TreeMap<Integer, String> listOfUsers;
 
     /**
      * Konstruktor tworzacy klasę oczekującą na komunikat końca pracy od klienta oraz realizującą wysyłanie plików do innych użytkowników.
      *
      * @param getInformation strumień wejściowy, zawierający informację od klienta
-     * @param userName nazwa użytkownika
-     * @param listOfUsers lista aktywnych użytkowników na serwerze
+     * @param userName       nazwa użytkownika
+     * @param listOfUsers    lista aktywnych użytkowników na serwerze
      */
-    SendFileToUser(DataInputStream getInformation,String userName,TreeMap<Integer,String> listOfUsers) {
+    SendFileToUser(DataInputStream getInformation, String userName, TreeMap<Integer, String> listOfUsers) {
         this.getInformation = getInformation;
-        this.userName=userName;
-        this.listOfUsers=listOfUsers;
+        this.userName = userName;
+        this.listOfUsers = listOfUsers;
     }
 
     /**
@@ -32,8 +34,8 @@ public class SendFileToUser implements Runnable {
      */
     @Override
     public void run() {
-        String destinationUser,fileName,action;
-        int portNumber=0;
+        String destinationUser, fileName, action;
+        int portNumber = 0;
         boolean isFound;
         File directory;
         File[] listOfFiles;
@@ -42,17 +44,17 @@ public class SendFileToUser implements Runnable {
         try {
             while (true) {
 
-                action= getInformation.readUTF();
-                if (!action.equals("END")){
+                action = getInformation.readUTF();
+                if (!action.equals("END")) {
 
-                    destinationUser=getInformation.readUTF();
+                    destinationUser = getInformation.readUTF();
                     fileName = getInformation.readUTF();
 
-                    directory=new File("Directories\\" + destinationUser);
-                    listOfFiles=directory.listFiles();
+                    directory = new File("Directories\\" + destinationUser);
+                    listOfFiles = directory.listFiles();
 
                     isFound = false;
-                    for(File files:listOfFiles) {
+                    for (File files : listOfFiles) {
 
                         if (files.getName().equals(fileName)) {
                             isFound = true;
@@ -60,7 +62,7 @@ public class SendFileToUser implements Runnable {
                         }
                     }
 
-                    if(!isFound){
+                    if (!isFound) {
 
                         synchronized (listOfUsers) {
                             for (Integer key : listOfUsers.keySet()) {
@@ -79,15 +81,12 @@ public class SendFileToUser implements Runnable {
                         threadSendingFile.start();
                         threadSendingFile.join();
                     }
-                }
-                else{
+                } else {
                     break;
                 }
             }
-        }
-        catch(SocketException e){
-        }
-        catch (IOException | InterruptedException e) {
+        } catch (SocketException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }

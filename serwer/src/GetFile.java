@@ -22,21 +22,21 @@ public class GetFile implements Runnable {
     /**
      * Konstruktor tworzący obiekt klasy pobierającej lub usuwającej plik z przekazanego gniazda.
      *
-     * @param socket gniazdo z którego pobierany jest plik
-     * @param fileName nazwa pobieranego pliku
-     * @param kindOfChange rodzaj zmiany
-     * @param directory uchwyt do katologu użytkownika
+     * @param socket              gniazdo z którego pobierany jest plik
+     * @param fileName            nazwa pobieranego pliku
+     * @param kindOfChange        rodzaj zmiany
+     * @param directory           uchwyt do katologu użytkownika
      * @param listOfReceivedFiles lista odebranych plików
      * @throws IOException może rzucić IOException
      */
-    GetFile(Socket socket,String fileName,String kindOfChange,File directory,ArrayList<String> listOfReceivedFiles) throws IOException {
-        this.socket=socket;
-        getFile=socket.getInputStream();
-        getInformation=new DataInputStream(getFile);
-        this.fileName=fileName;
-        this.kindOfChange=kindOfChange;
-        this.directory=directory;
-        this.listOfReceivedFiles=listOfReceivedFiles;
+    GetFile(Socket socket, String fileName, String kindOfChange, File directory, ArrayList<String> listOfReceivedFiles) throws IOException {
+        this.socket = socket;
+        getFile = socket.getInputStream();
+        getInformation = new DataInputStream(getFile);
+        this.fileName = fileName;
+        this.kindOfChange = kindOfChange;
+        this.directory = directory;
+        this.listOfReceivedFiles = listOfReceivedFiles;
     }
 
     /**
@@ -45,51 +45,47 @@ public class GetFile implements Runnable {
     @Override
     public void run() {
         long fileLength;
-        File file=null;
-        FileOutputStream fileOutput=null;
+        File file = null;
+        FileOutputStream fileOutput = null;
 
         try {
-            file=new File(directory+"//"+fileName);
+            file = new File(directory + "//" + fileName);
 
-            if(kindOfChange.equals("NEW")){
+            if (kindOfChange.equals("NEW")) {
 
-                synchronized (listOfReceivedFiles){
+                synchronized (listOfReceivedFiles) {
                     listOfReceivedFiles.add(fileName);
                 }
-                fileLength=getInformation.readLong();
-                if(!file.exists())
+                fileLength = getInformation.readLong();
+                if (!file.exists())
                     file.createNewFile();
-                fileOutput=new FileOutputStream(file);
+                fileOutput = new FileOutputStream(file);
 
-                for(int i=0;i<fileLength;++i){
+                for (int i = 0; i < fileLength; ++i) {
                     fileOutput.write(getFile.read());
                 }
                 fileOutput.close();
-            }
-            else{
-                if(file.exists())
+            } else {
+                if (file.exists())
                     file.delete();
 
-                synchronized (listOfReceivedFiles){
-                    if(listOfReceivedFiles.contains(fileName))
+                synchronized (listOfReceivedFiles) {
+                    if (listOfReceivedFiles.contains(fileName))
                         listOfReceivedFiles.remove(fileName);
                 }
             }
-        }
-        catch(SocketException e){
+        } catch (SocketException e) {
             try {
-                if(fileOutput!=null){
+                if (fileOutput != null) {
                     fileOutput.close();
                     file.delete();
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 getFile.close();
                 socket.close();

@@ -19,16 +19,16 @@ public class SendFile implements Runnable {
      * Konstruktor tworzący obiekt klasy wysyłającej nowy plik na przekazny port.
      *
      * @param kindOfChange rodzaj zmiany
-     * @param portNumber numer portu, na którym aplikacja serwerowa wysyła nowe pliki
-     * @param fileName nazwa wysyłanego pliku
+     * @param portNumber   numer portu, na którym aplikacja serwerowa wysyła nowe pliki
+     * @param fileName     nazwa wysyłanego pliku
      * @throws IOException może rzucić IOException
      */
-    SendFile(String kindOfChange,int portNumber,String fileName) throws IOException {
-        clientSocket=new Socket("localhost",portNumber);
-        sendFile=clientSocket.getOutputStream();
-        sendInformation=new DataOutputStream(sendFile);
-        file=new File(fileName);
-        this.kindOfChange=kindOfChange;
+    SendFile(String kindOfChange, int portNumber, String fileName) throws IOException {
+        clientSocket = new Socket("localhost", portNumber);
+        sendFile = clientSocket.getOutputStream();
+        sendInformation = new DataOutputStream(sendFile);
+        file = new File(fileName);
+        this.kindOfChange = kindOfChange;
     }
 
     /**
@@ -36,14 +36,14 @@ public class SendFile implements Runnable {
      */
     @Override
     public void run() {
-        int theByte=0;
-        FileInputStream fileInput=null;
+        int theByte = 0;
+        FileInputStream fileInput = null;
 
         try {
-            if(kindOfChange.equals("NEW")){
+            if (kindOfChange.equals("NEW")) {
 
                 Thread.sleep(3000);
-                fileInput=new FileInputStream(file);
+                fileInput = new FileInputStream(file);
                 sendInformation.writeUTF(file.getName());
                 sendInformation.writeUTF("NEW");
                 sendInformation.writeLong(file.length());
@@ -52,13 +52,11 @@ public class SendFile implements Runnable {
                     sendFile.write(theByte);
                 }
             }
-        }
-        catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
-                if(fileInput!=null)
+                if (fileInput != null)
                     fileInput.close();
                 sendFile.close();
             } catch (IOException e) {

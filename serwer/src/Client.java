@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  * @author Piotr Kupis
  * @version 1.0, 15 czerwiec 2020
  */
-public class Client extends SwingWorker<Void,Change> {
+public class Client extends SwingWorker<Void, Change> {
 
     private JPanel clientsPanel;
     private JScrollPane clientsScrollPane;
@@ -43,14 +43,14 @@ public class Client extends SwingWorker<Void,Change> {
     /**
      * Konstruktor tworzący obiekt klasy obsługującej klientów, którzy dołączyli do serwera.
      *
-     * @param socket główne gniazdo przeznaczone do komunikacji klienta z serwerem
-     * @param portToGetFile numer portu, na którym serwer pobiera pliki od klienta
-     * @param portToSendFile numer portu, na którym serwer wysyła pliki do klienta
-     * @param ports zbiór portów, zawierający informacje o zajętych portach
-     * @param listOfUsers lista aktywnych użytkowników na serwerze
-     * @param clientsPanel panel graficzny zawierający panele wszystkich klientów
+     * @param socket            główne gniazdo przeznaczone do komunikacji klienta z serwerem
+     * @param portToGetFile     numer portu, na którym serwer pobiera pliki od klienta
+     * @param portToSendFile    numer portu, na którym serwer wysyła pliki do klienta
+     * @param ports             zbiór portów, zawierający informacje o zajętych portach
+     * @param listOfUsers       lista aktywnych użytkowników na serwerze
+     * @param clientsPanel      panel graficzny zawierający panele wszystkich klientów
      * @param clientsScrollPane scrol panelu graficznego zawierającego panele wszystkich klientów
-     * @param usersLabel etykieta zawierająca napis "Aktywni użytkownicy:"
+     * @param usersLabel        etykieta zawierająca napis "Aktywni użytkownicy:"
      * @throws IOException może rzucić IOException
      */
     Client(Socket socket, int portToGetFile, int portToSendFile, int[] ports, TreeMap<Integer, String> listOfUsers, JPanel clientsPanel, JScrollPane clientsScrollPane, JLabel usersLabel) throws IOException {

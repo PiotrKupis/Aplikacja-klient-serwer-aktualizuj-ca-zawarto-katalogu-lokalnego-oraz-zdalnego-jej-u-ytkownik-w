@@ -8,7 +8,7 @@ import java.util.List;
  * @author Piotr Kupis
  * @version 1.0, 15 czerwiec 2020
  */
-public class WaitForListOfUsers extends SwingWorker<Void,Change>{
+public class WaitForListOfUsers extends SwingWorker<Void, Change> {
 
     private DataInputStream getInformation;
     private DefaultListModel<String> usersListModel;
@@ -19,12 +19,12 @@ public class WaitForListOfUsers extends SwingWorker<Void,Change>{
      *
      * @param getInformation strumień wejściowy, zawierający informację od serwera
      * @param usersListModel model listy aktualnych użytkowników w interfejsie graficznym
-     * @param actionLabel etykieta zawierająca informację czym aktualnie zajmuje się aplikacja kliencka
+     * @param actionLabel    etykieta zawierająca informację czym aktualnie zajmuje się aplikacja kliencka
      */
-    WaitForListOfUsers(DataInputStream getInformation,DefaultListModel<String> usersListModel, JLabel actionLabel){
-        this.getInformation=getInformation;
-        this.usersListModel=usersListModel;
-        this.actionLabel=actionLabel;
+    WaitForListOfUsers(DataInputStream getInformation, DefaultListModel<String> usersListModel, JLabel actionLabel) {
+        this.getInformation = getInformation;
+        this.usersListModel = usersListModel;
+        this.actionLabel = actionLabel;
     }
 
     /**
@@ -35,20 +35,19 @@ public class WaitForListOfUsers extends SwingWorker<Void,Change>{
     @Override
     protected Void doInBackground() throws Exception {
 
-        String userName,action;
-        while(true){
+        String userName, action;
+        while (true) {
 
-                action=getInformation.readUTF();
-                userName=getInformation.readUTF();
-                publish(new Change("ACTION","Pobieram"));
+            action = getInformation.readUTF();
+            userName = getInformation.readUTF();
+            publish(new Change("ACTION", "Pobieram"));
 
-                if(action.equals("NEW")){
-                    publish(new Change("NEW",userName));
-                }
-                else{
-                    publish(new Change("DELETED",userName));
-                }
-                publish(new Change("ACTION","Sprawdzam"));
+            if (action.equals("NEW")) {
+                publish(new Change("NEW", userName));
+            } else {
+                publish(new Change("DELETED", userName));
+            }
+            publish(new Change("ACTION", "Sprawdzam"));
         }
     }
 
@@ -60,14 +59,12 @@ public class WaitForListOfUsers extends SwingWorker<Void,Change>{
     @Override
     protected void process(List<Change> changesList) {
 
-        for(Change change:changesList){
-            if(change.getKindOfChange().equals("NEW")){
+        for (Change change : changesList) {
+            if (change.getKindOfChange().equals("NEW")) {
                 usersListModel.addElement(change.getValue());
-            }
-            else if(change.getKindOfChange().equals("DELETED")){
+            } else if (change.getKindOfChange().equals("DELETED")) {
                 usersListModel.removeElement(change.getValue());
-            }
-            else{
+            } else {
                 actionLabel.setText(change.getValue());
             }
         }

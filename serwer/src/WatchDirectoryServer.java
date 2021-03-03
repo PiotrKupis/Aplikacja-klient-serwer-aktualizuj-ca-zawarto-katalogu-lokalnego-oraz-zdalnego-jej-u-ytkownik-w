@@ -21,18 +21,18 @@ public class WatchDirectoryServer extends SwingWorker<Void, Change> {
     /**
      * Konstruktor tworzący obiekt klasy obserwującej katalog klienta na serwerze i wywoływującej wątki obsługujące zmiany.
      *
-     * @param threadPool pula wątków przeznaczona do odbierania i wysłania plików
-     * @param portNumber numer portu, na którym aplikacja serwerowa wysyła informacje o nowych plikach
-     * @param directory uchwyt do katologu klienta na serwerze
+     * @param threadPool          pula wątków przeznaczona do odbierania i wysłania plików
+     * @param portNumber          numer portu, na którym aplikacja serwerowa wysyła informacje o nowych plikach
+     * @param directory           uchwyt do katologu klienta na serwerze
      * @param listOfReceivedFiles lista odebranych plików
-     * @param filesListModel model listy plików katalogu użytkownika na serwerze w interfejsie graficznym
+     * @param filesListModel      model listy plików katalogu użytkownika na serwerze w interfejsie graficznym
      */
-    WatchDirectoryServer(ExecutorService threadPool,int portNumber,File directory,ArrayList<String> listOfReceivedFiles,DefaultListModel<String> filesListModel){
-        this.portNumber=portNumber;
-        this.directory=directory;
-        this.threadPool=threadPool;
-        this.listOfReceivedFiles=listOfReceivedFiles;
-        this.filesListModel=filesListModel;
+    WatchDirectoryServer(ExecutorService threadPool, int portNumber, File directory, ArrayList<String> listOfReceivedFiles, DefaultListModel<String> filesListModel) {
+        this.portNumber = portNumber;
+        this.directory = directory;
+        this.threadPool = threadPool;
+        this.listOfReceivedFiles = listOfReceivedFiles;
+        this.filesListModel = filesListModel;
     }
 
     /**
@@ -48,26 +48,26 @@ public class WatchDirectoryServer extends SwingWorker<Void, Change> {
         File[] newListOfFiles;
         boolean isFound;
 
-        while (true){
+        while (true) {
 
-            newListOfFiles=directory.listFiles();
-            if(!newListOfFiles.equals(listOfFiles)){
+            newListOfFiles = directory.listFiles();
+            if (!newListOfFiles.equals(listOfFiles)) {
 
-                for(File newFiles:newListOfFiles){
-                    isFound=false;
-                    for(File oldFiles:listOfFiles){
-                        if(newFiles.getName().equals(oldFiles.getName())){
-                            isFound=true;
+                for (File newFiles : newListOfFiles) {
+                    isFound = false;
+                    for (File oldFiles : listOfFiles) {
+                        if (newFiles.getName().equals(oldFiles.getName())) {
+                            isFound = true;
                             break;
                         }
                     }
 
-                    if(!isFound){
+                    if (!isFound) {
                         synchronized (listOfReceivedFiles) {
-                            if(!listOfReceivedFiles.contains(newFiles.getName())){
+                            if (!listOfReceivedFiles.contains(newFiles.getName())) {
                                 listOfReceivedFiles.add(newFiles.getName());
-                                threadSendingFile=new Thread(new SendFile("NEW",portNumber,directory.toString()+"\\"+newFiles.getName()));
-                                publish(new Change("NEW",newFiles.getName()));
+                                threadSendingFile = new Thread(new SendFile("NEW", portNumber, directory.toString() + "\\" + newFiles.getName()));
+                                publish(new Change("NEW", newFiles.getName()));
                                 threadPool.execute(threadSendingFile);
                             }
                         }
@@ -75,24 +75,24 @@ public class WatchDirectoryServer extends SwingWorker<Void, Change> {
                 }
 
 
-                for(File oldFiles:listOfFiles){
-                    isFound=false;
-                    for(File newFiles:newListOfFiles){
-                        if(oldFiles.getName().equals(newFiles.getName())){
-                            isFound=true;
+                for (File oldFiles : listOfFiles) {
+                    isFound = false;
+                    for (File newFiles : newListOfFiles) {
+                        if (oldFiles.getName().equals(newFiles.getName())) {
+                            isFound = true;
                             break;
                         }
                     }
 
-                    if(!isFound){
+                    if (!isFound) {
                         synchronized (listOfReceivedFiles) {
-                            if(listOfReceivedFiles.contains(oldFiles.getName()))
+                            if (listOfReceivedFiles.contains(oldFiles.getName()))
                                 listOfReceivedFiles.remove(oldFiles.getName());
                         }
-                        publish(new Change("DELETED",oldFiles.getName()));
+                        publish(new Change("DELETED", oldFiles.getName()));
                     }
                 }
-                listOfFiles=newListOfFiles;
+                listOfFiles = newListOfFiles;
             }
             Thread.sleep(3000);
         }
@@ -106,11 +106,10 @@ public class WatchDirectoryServer extends SwingWorker<Void, Change> {
     @Override
     protected void process(List<Change> changesList) {
 
-        for(Change change:changesList){
-            if(change.getKindOfChange().equals("NEW")){
+        for (Change change : changesList) {
+            if (change.getKindOfChange().equals("NEW")) {
                 filesListModel.addElement(change.getValue());
-            }
-            else if(change.getKindOfChange().equals("DELETED")){
+            } else if (change.getKindOfChange().equals("DELETED")) {
                 filesListModel.removeElement(change.getValue());
             }
         }

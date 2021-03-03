@@ -1,5 +1,5 @@
 import javax.swing.*;
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.TreeMap;
@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
  * @author Piotr Kupis
  * @version 1.0, 15 czerwiec 2020
  */
-public class Server extends SwingWorker<Void,Change> {
+public class Server extends SwingWorker<Void, Change> {
 
     private JPanel clientsPanel;
     private JScrollPane clientsScrollPane;
@@ -20,25 +20,25 @@ public class Server extends SwingWorker<Void,Change> {
 
     private ServerSocket serverSocket;
     private ExecutorService threadPool;
-    private TreeMap<Integer,String> listOfUsers;
+    private TreeMap<Integer, String> listOfUsers;
     private int[] ports = new int[40];
 
     /**
      * Konstruktor tworzący obiekt klasy przyjmującej nowych klientów i wywoływującej wątki ich obsługujące.
      *
-     * @param clientsPanel panel graficzny zawierający panele wszystkich klientów
+     * @param clientsPanel      panel graficzny zawierający panele wszystkich klientów
      * @param clientsScrollPane scrol panelu graficznego zawierającego panele wszystkich klientów
-     * @param usersLabel etykieta zawierająca napis "Aktywni użytkownicy:"
+     * @param usersLabel        etykieta zawierająca napis "Aktywni użytkownicy:"
      * @throws IOException może rzucić IOException
      */
-    Server(JPanel clientsPanel,JScrollPane clientsScrollPane,JLabel usersLabel) throws IOException {
-        this.clientsPanel=clientsPanel;
-        this.clientsScrollPane=clientsScrollPane;
-        this.usersLabel=usersLabel;
+    Server(JPanel clientsPanel, JScrollPane clientsScrollPane, JLabel usersLabel) throws IOException {
+        this.clientsPanel = clientsPanel;
+        this.clientsScrollPane = clientsScrollPane;
+        this.usersLabel = usersLabel;
 
         serverSocket = new ServerSocket(6000);
         threadPool = Executors.newFixedThreadPool(9);
-        listOfUsers=new TreeMap<Integer, String>();
+        listOfUsers = new TreeMap<Integer, String>();
     }
 
     /**
@@ -60,9 +60,9 @@ public class Server extends SwingWorker<Void,Change> {
                 if (ports[i] == 0)
                     break;
             }
-            ports[i]=1;
+            ports[i] = 1;
 
-            clientThread= new Client(socket, 6001 + i * 2, 6001 + i * 2 + 1,ports,listOfUsers,clientsPanel,clientsScrollPane,usersLabel);
+            clientThread = new Client(socket, 6001 + i * 2, 6001 + i * 2 + 1, ports, listOfUsers, clientsPanel, clientsScrollPane, usersLabel);
             threadPool.execute(clientThread);
         }
     }
